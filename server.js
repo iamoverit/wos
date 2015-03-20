@@ -15,9 +15,9 @@ var gamedata = { 	gf : {x : 50, y : 50},
 			console.dir([player1, player2, port]);
 		}, 5000);
 */
-function inArray(needle, haystack) {
+function collision(needle, haystack) {
     var length = haystack.length;
-    for(var i = 0; i < length; i++) {
+    for(var i = 1; i < length; i++) {
         if(haystack[i] == needle) return true;
     }
     return false;
@@ -35,7 +35,7 @@ function setcherry(){
 	console.log(gamedata.cherry);
 	with(snake1){
 		setInterval(function(){
-			if(inArray(snake.seg[0],snake.seg)){
+			if(collision(snake.seg[0],snake.seg)){
 				snake.seg=[];
 				io.emit('lose', 'snake1');
 			}
@@ -67,7 +67,7 @@ function setcherry(){
 	}
 	with(snake2){
 		setInterval(function(){
-			if(inArray(snake.seg[0],snake.seg)){
+			if(collision(snake.seg[0],snake.seg)){
 				snake.seg=[];
 				io.emit('lose', 'snake2');
 			}
