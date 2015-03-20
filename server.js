@@ -3,16 +3,18 @@ var io = require('socket.io')(port);
 console.log('start listening? %d', port);
 var gamedata = { 	gf : {x : 50, y : 50},
 									cherry : {x: null, y: null},
-									speed:1,
+									speed:15,
 									interval:1000,
 								},
 		snake1 = {dir : [{x: 1, y: 0}], snake: {seg: [{x:0, y:0},{x:0, y:0},{x:0, y:0},{x:0, y:0},{x:0, y:0}]}};
 		snake2 = {dir : [{x: 1, y: 0}], snake: {seg: [{x:0, y:0},{x:0, y:0},{x:0, y:0},{x:0, y:0},{x:0, y:0}]}};
 		player1='';
 		player2='';
+/*
 		setInterval(function(){
-			console.dir([player1, player2]);
+			console.dir([player1, player2, port]);
 		}, 5000);
+*/
 io.on('connect', function (socket) {
 	if(player1==''){
 		player1=(socket.id).toString();
