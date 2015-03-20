@@ -36,7 +36,7 @@ function setcherry(){
 	with(snake1){
 		setInterval(function(){
 			if(collision(snake.seg[0],snake.seg)){
-				snake.seg=[];
+				//snake.seg=[];
 				io.emit('lose', 'snake1');
 			}
 	
@@ -68,7 +68,7 @@ function setcherry(){
 	with(snake2){
 		setInterval(function(){
 			if(collision(snake.seg[0],snake.seg)){
-				snake.seg=[];
+				//snake.seg=[];
 				io.emit('lose', 'snake2');
 			}
 			if(snake.seg[0].x==gamedata.cherry.x&&snake.seg[0].y==gamedata.cherry.y){
