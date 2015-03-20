@@ -1,1 +1,1 @@
-web: npm install socketio
+web: npm install socket.io
