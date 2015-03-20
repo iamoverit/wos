@@ -15,16 +15,8 @@ var gamedata = { 	gf : {x : 50, y : 50},
 			console.dir([player1, player2, port]);
 		}, 5000);
 */
-io.on('connect', function (socket) {
-	if(player1==''){
-		player1=(socket.id).toString();
-		socket.emit('join', 'dir1');
-	}else{
-		if(player2==''){
-			player2=(socket.id).toString();
-			socket.emit('join', 'dir2');
-		}
-	}
+
+
 	with(snake1){
 		setInterval(function(){
 			for(var i=snake.seg.length-1;i>0 ;i--) {
@@ -64,6 +56,18 @@ io.on('connect', function (socket) {
 				dir.splice(0, 1);
 			}
 		},gamedata.interval/gamedata.speed);
+	}
+
+
+io.on('connect', function (socket) {
+	if(player1==''){
+		player1=(socket.id).toString();
+		socket.emit('join', 'dir1');
+	}else{
+		if(player2==''){
+			player2=(socket.id).toString();
+			socket.emit('join', 'dir2');
+		}
 	}
 
 	socket.emit('gamedata', gamedata );
