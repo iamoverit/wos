@@ -1,4 +1,3 @@
-var extend = require('extend');
 var io = require('socket.io')(81);
 var gamedata = { 	gf : {x : 50, y : 50},
 									cherry : {x: null, y: null},
