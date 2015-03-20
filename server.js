@@ -1,5 +1,4 @@
-//var port = process.env.PORT || 5000;
-var port = 80;
+var port = process.env.PORT || 60605;
 var io = require('socket.io')(port);
 console.log('start listening? %d', port);
 var gamedata = { 	gf : {x : 50, y : 50},
