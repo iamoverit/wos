@@ -1,6 +1,6 @@
 var port = process.env.PORT || 5000
 var io = require('socket.io')(port);
-console.log('start listening?');
+console.log('start listening? %d', port);
 var gamedata = { 	gf : {x : 50, y : 50},
 									cherry : {x: null, y: null},
 									speed:1,
