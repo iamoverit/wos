@@ -10,9 +10,9 @@ var gamedata = { 	gf : {x : 50, y : 50},
 		snake2 = {dir : [{x: 1, y: 0}], snake: {seg: [{x:0, y:0},{x:0, y:0},{x:0, y:0},{x:0, y:0},{x:0, y:0}]}};
 		player1='';
 		player2='';
-		/*setInterval(function(){
+		setInterval(function(){
 			console.dir([player1, player2]);
-		}, 1000);*/
+		}, 5000);
 io.on('connect', function (socket) {
 	if(player1==''){
 		player1=(socket.id).toString();
