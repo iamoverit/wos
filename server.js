@@ -15,10 +15,25 @@ var gamedata = { 	gf : {x : 50, y : 50},
 			console.dir([player1, player2, port]);
 		}, 5000);
 */
+function setcherry(){
+	with(gamedata){
+		cherry.x = Math.round((Math.random()*(gf.x-1)));
+		cherry.y = Math.round((Math.random()*(gf.y-1)));
+	}
+}
 
-
+	setcherry();
+	io.emit('setcherry', gamedata.cherry);
+	console.log(gamedata.cherry);
 	with(snake1){
 		setInterval(function(){
+			if(snake.seg[0].x==gamedata.cherry.x&&snake.seg[0].y==gamedata.cherry.y){
+				snake.seg[snake.seg.length]={x: snake.seg[snake.seg.length-1].x, y: snake.seg[snake.seg.length-1].y};
+				io.emit('delcherry', gamedata.cherry);
+				setcherry();
+				io.emit('setcherry', gamedata.cherry);
+			}
+
 			for(var i=snake.seg.length-1;i>0 ;i--) {
 				snake.seg[i].x=snake.seg[i-1].x;
 				snake.seg[i].y=snake.seg[i-1].y;
@@ -39,6 +54,12 @@ var gamedata = { 	gf : {x : 50, y : 50},
 	}
 	with(snake2){
 		setInterval(function(){
+			if(snake.seg[0].x==gamedata.cherry.x&&snake.seg[0].y==gamedata.cherry.y){
+				snake.seg[snake.seg.length]={x: snake.seg[snake.seg.length-1].x, y: snake.seg[snake.seg.length-1].y};
+				io.emit('delcherry', cherry);
+				setcherry();
+				io.emit('setcherry', cherry);
+			}
 			for(var i=snake.seg.length-1;i>0 ;i--) {
 				snake.seg[i].x=snake.seg[i-1].x;
 				snake.seg[i].y=snake.seg[i-1].y;
