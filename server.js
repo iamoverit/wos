@@ -6,8 +6,8 @@ var gamedata = { 	gf : {x : 50, y : 50},
 									speed:10,
 									interval:1000,
 								},
-		snake1 = {dir : [{x: 1, y: 0}], snake: {seg: [{x:0, y:0},{x:0, y:0},{x:0, y:0},{x:0, y:0},{x:0, y:0}]}};
-		snake2 = {dir : [{x: 1, y: 0}], snake: {seg: [{x:0, y:0},{x:0, y:0},{x:0, y:0},{x:0, y:0},{x:0, y:0}]}};
+		snake1 = {dir : [{x: 0, y: 1}], snake: {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
+		snake2 = {dir : [{x: 1, y: 0}], snake: {seg: [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
 		player1='';
 		player2='';
 /*
