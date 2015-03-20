@@ -1,4 +1,4 @@
-var io = require('socket.io')(81);
+var io = require('socket.io')(5000);
 var gamedata = { 	gf : {x : 50, y : 50},
 									cherry : {x: null, y: null},
 									speed:1,
