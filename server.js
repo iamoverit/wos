@@ -56,9 +56,9 @@ function setcherry(){
 		setInterval(function(){
 			if(snake.seg[0].x==gamedata.cherry.x&&snake.seg[0].y==gamedata.cherry.y){
 				snake.seg[snake.seg.length]={x: snake.seg[snake.seg.length-1].x, y: snake.seg[snake.seg.length-1].y};
-				io.emit('delcherry', cherry);
+				io.emit('delcherry', gamedata.cherry);
 				setcherry();
-				io.emit('setcherry', cherry);
+				io.emit('setcherry', gamedata.cherry);
 			}
 			for(var i=snake.seg.length-1;i>0 ;i--) {
 				snake.seg[i].x=snake.seg[i-1].x;
