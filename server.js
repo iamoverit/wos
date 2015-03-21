@@ -6,8 +6,8 @@ var gamedata = { 	gf : {x : 50, y : 50},
 									speed:10,
 									interval:1000,
 								},
-		snake1 = {dir : [{x: 0, y: 1}], snake: {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
-		snake2 = {dir : [{x: 1, y: 0}], snake: {seg: [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
+		snake1 = {score: 0, dir : [{x: 0, y: 1}], snake: {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
+		snake2 = {score: 0, dir : [{x: 1, y: 0}], snake: {seg: [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
 		player1='';
 		player2='';
 /*
@@ -48,7 +48,8 @@ function setcherry(){
 	with(snake1){
 		setInterval(function(){
 			if(collision(snake.seg[0])){
-				snake.seg=[{x: null, y: null}];
+				snake1 = {score: score, dir : [{x: 0, y: 1}], snake: {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
+				snake2 = {score: snake2.score+1, dir : [{x: 1, y: 0}], snake: {seg: [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
 				console.log('snake1');
 				io.emit('lose', 'snake1');
 				io.emit('gamedata', gamedata);
@@ -82,7 +83,8 @@ function setcherry(){
 	with(snake2){
 		setInterval(function(){
 			if(collision(snake.seg[0])){
-				snake.seg=[{x: null, y: null}];
+				snake1 = {score: score1,score+1, dir : [{x: 0, y: 1}], snake: {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
+				snake2 = {score: score, dir : [{x: 1, y: 0}], snake: {seg: [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
 				console.log('snake2');
 				io.emit('lose', 'snake2');
 				io.emit('gamedata', gamedata);
