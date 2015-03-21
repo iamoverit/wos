@@ -1,0 +1,83 @@
+/* =======================================
+
+		Main Stylesheet
+		
+		Building on Twitter Bootstrap
+		http://twitter.github.com/bootstrap/
+		
+========================================== */
+
+@import url('bootstrap.min.css');
+@import url('bootstrap-theme.min.css');
+@import url('animate.css');
+
+
+.site__header {
+  -webkit-animation: bounceInDown 1s;
+}
+
+  .site__title {
+    color: #f35626;
+    background-image: -webkit-linear-gradient(92deg,#f35626,#feab3a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-animation: hue 60s infinite linear;
+  }
+
+
+.wall {
+  background-color: #5bc0de;
+}
+.snake1 {
+  background-color: #d9534f;
+}
+.snake2 {
+  background-color: #337ab7;
+}
+.cherry {
+  background-color: #5cb85c;
+}
+.score>*{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	height: 30%;
+	width: 50%;
+	margin: -15% 0 0 -25%;
+}
+.score {
+	position: relative;
+  width: 100px;
+  height: 100px;
+	text-align: center;
+	vertical-align: middle;
+	font: 100%/1.5 "Roboto", Verdana, sans-serif;
+	font-weight: bold;
+	color: #fff;
+	-webkit-font-smoothing: antialiased;
+	overflow: hidden-x;
+	text-align: center;	
+}
+.scoreblue {
+  background-color: #337ab7;
+	border-radius: 6px;
+	float: left;
+}
+.scorered {
+  background-color: #d9534f;
+	border-radius: 6px;
+	float: right;
+}
+table#gamefield{
+	margin: 0 auto;
+  border: 3px double;
+	border-color: #ddd;
+	/*border-spacing: 2px;*/
+  border-collapse: separate;
+}
+table#gamefield tr td{
+  border: 1px solid;
+	border-spacing: 0px;
+	border-color: #fff;
+	/*border-radius: 50%;*/
+}

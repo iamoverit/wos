@@ -3,7 +3,7 @@ var io = require('socket.io')(port);
 console.log('start listening? %d', port);
 var gamedata = { 	gf : {x : 50, y : 50},
 									cherry : {x: null, y: null},
-									speed:10,
+									speed:12,
 									interval:1000,
 								},
 		snake1 = {score: 0, dir : [{x: 0, y: 1}], snake: {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
@@ -42,80 +42,87 @@ function setcherry(){
 	}
 }
 
-	setcherry();
-	io.emit('setcherry', gamedata.cherry);
-	console.log(gamedata.cherry);
-	with(snake1){
-		setInterval(function(){
-			if(collision(snake.seg[0])){
-				snake1 = {score: score, dir : [{x: 0, y: 1}], snake: {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
+	setInterval(function(){
+		(function(s) {
+			if(collision(s.snake.seg[0])){
 				snake2 = {score: snake2.score+1, dir : [{x: 1, y: 0}], snake: {seg: [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
+				s.dir = [{x: 0, y: 1}]
+				s.snake = {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]};
 				console.log('snake1');
-				io.emit('lose', 'snake1');
-				io.emit('gamedata', gamedata);
+				io.emit('resetfield', true);
+				io.emit('setcherry', gamedata.cherry);
+				io.emit('score', {snake1: snake1.score, snake2: snake2.score, lose: 'snake1'});
 			}
 	
-			if(snake.seg[0].x==gamedata.cherry.x&&snake.seg[0].y==gamedata.cherry.y){
-				snake.seg[snake.seg.length]={x: snake.seg[snake.seg.length-1].x, y: snake.seg[snake.seg.length-1].y};
+			if(s.snake.seg[0].x==gamedata.cherry.x&&s.snake.seg[0].y==gamedata.cherry.y){
+				s.snake.seg[s.snake.seg.length]={x: s.snake.seg[s.snake.seg.length-1].x, y: s.snake.seg[s.snake.seg.length-1].y};
 				io.emit('delcherry', gamedata.cherry);
 				setcherry();
 				io.emit('setcherry', gamedata.cherry);
 			}
 
-			for(var i=snake.seg.length-1;i>0 ;i--) {
-				snake.seg[i].x=snake.seg[i-1].x;
-				snake.seg[i].y=snake.seg[i-1].y;
+			for(var i=s.snake.seg.length-1;i>0 ;i--) {
+				s.snake.seg[i].x=s.snake.seg[i-1].x;
+				s.snake.seg[i].y=s.snake.seg[i-1].y;
 			}	
-			snake.seg[0].x+=dir[0].x;
-			snake.seg[0].y+=dir[0].y;
-			if(snake.seg[0].x>gamedata.gf.x-1)	snake.seg[0].x=0
-			if(snake.seg[0].y>gamedata.gf.y-1)	snake.seg[0].y=0
-			if(snake.seg[0].x<0)	snake.seg[0].x=gamedata.gf.x-1
-			if(snake.seg[0].y<0)	snake.seg[0].y=gamedata.gf.y-1
+			s.snake.seg[0].x+=s.dir[0].x;
+			s.snake.seg[0].y+=s.dir[0].y;
+			if(s.snake.seg[0].x>gamedata.gf.x-1)	s.snake.seg[0].x=0
+			if(s.snake.seg[0].y>gamedata.gf.y-1)	s.snake.seg[0].y=0
+			if(s.snake.seg[0].x<0)	s.snake.seg[0].x=gamedata.gf.x-1
+			if(s.snake.seg[0].y<0)	s.snake.seg[0].y=gamedata.gf.y-1
 
-			io.emit('snake1', snake);
+			io.emit('snake1', s.snake);
 
-			if(dir.length>1){
-				dir.splice(0, 1);
+			if(s.dir.length>1){
+				s.dir.splice(0, 1);
 			}
-		},gamedata.interval/gamedata.speed);
-	}
-	with(snake2){
-		setInterval(function(){
-			if(collision(snake.seg[0])){
-				snake1 = {score: score1,score+1, dir : [{x: 0, y: 1}], snake: {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
-				snake2 = {score: score, dir : [{x: 1, y: 0}], snake: {seg: [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
-				console.log('snake2');
-				io.emit('lose', 'snake2');
-				io.emit('gamedata', gamedata);
+		}(snake1));
+	},gamedata.interval/gamedata.speed);
+
+	setInterval(function(){
+		(function(s) {
+			if(collision(s.snake.seg[0])){
+				snake1 = {score: snake1.score+1, dir : [{x: 0, y: 1}], snake: {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
+				s.dir = [{x: 1, y: 0}];
+				s.snake = {seg: [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]};
+				io.emit('resetfield', true);
+				io.emit('setcherry', gamedata.cherry);
+				io.emit('score', {snake1: snake1.score, snake2: snake2.score, lose: 'snake2'});
 			}
-			if(snake.seg[0].x==gamedata.cherry.x&&snake.seg[0].y==gamedata.cherry.y){
-				snake.seg[snake.seg.length]={x: snake.seg[snake.seg.length-1].x, y: snake.seg[snake.seg.length-1].y};
+			if(s.snake.seg[0].x==gamedata.cherry.x&&s.snake.seg[0].y==gamedata.cherry.y){
+				s.snake.seg[s.snake.seg.length]={x: s.snake.seg[s.snake.seg.length-1].x, y: s.snake.seg[s.snake.seg.length-1].y};
 				io.emit('delcherry', gamedata.cherry);
 				setcherry();
 				io.emit('setcherry', gamedata.cherry);
 			}
-			for(var i=snake.seg.length-1;i>0 ;i--) {
-				snake.seg[i].x=snake.seg[i-1].x;
-				snake.seg[i].y=snake.seg[i-1].y;
+			for(var i=s.snake.seg.length-1;i>0 ;i--) {
+				s.snake.seg[i].x=s.snake.seg[i-1].x;
+				s.snake.seg[i].y=s.snake.seg[i-1].y;
 			}	
-			snake.seg[0].x+=dir[0].x;
-			snake.seg[0].y+=dir[0].y;
-			if(snake.seg[0].x>gamedata.gf.x-1)	snake.seg[0].x=0
-			if(snake.seg[0].y>gamedata.gf.y-1)	snake.seg[0].y=0
-			if(snake.seg[0].x<0)	snake.seg[0].x=gamedata.gf.x-1
-			if(snake.seg[0].y<0)	snake.seg[0].y=gamedata.gf.y-1
+			s.snake.seg[0].x+=s.dir[0].x;
+			s.snake.seg[0].y+=s.dir[0].y;
+			if(s.snake.seg[0].x>gamedata.gf.x-1)	s.snake.seg[0].x=0
+			if(s.snake.seg[0].y>gamedata.gf.y-1)	s.snake.seg[0].y=0
+			if(s.snake.seg[0].x<0)	s.snake.seg[0].x=gamedata.gf.x-1
+			if(s.snake.seg[0].y<0)	s.snake.seg[0].y=gamedata.gf.y-1
 
-			io.emit('snake2', snake);
-
-			if(dir.length>1){
-				dir.splice(0, 1);
+			io.emit('snake2', s.snake);
+			if(s.dir.length>1){
+				s.dir.splice(0, 1);
 			}
-		},gamedata.interval/gamedata.speed);
-	}
+		}(snake2));
+	},gamedata.interval/gamedata.speed);
 
 
 io.on('connect', function (socket) {
+
+	io.emit('score', {snake1: snake1.score, snake2: snake2.score});
+	setcherry();
+	io.emit('setcherry', gamedata.cherry);
+	console.log(gamedata.cherry);
+	console.log({snake1: snake1.score, snake2: snake2.score});
+
 	if(player1==''){
 		player1=(socket.id).toString();
 		socket.emit('join', 'dir1');
