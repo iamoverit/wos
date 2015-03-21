@@ -15,10 +15,22 @@ var gamedata = { 	gf : {x : 50, y : 50},
 			console.dir([player1, player2, port]);
 		}, 5000);
 */
-function collision(needle, haystack) {
+function collision(needle) {
+		var haystack = snake1.snake.seg;
+		//console.log(haystack, needle);
     var length = haystack.length;
     for(var i = 1; i < length; i++) {
-        if(haystack[i] == needle) return true;
+        if(haystack[i].x == needle.x&&haystack[i].y == needle.y){
+					return true;
+				}
+    }
+		var haystack = snake2.snake.seg;
+		//console.log(haystack, needle);
+    var length = haystack.length;
+    for(var i = 1; i < length; i++) {
+        if(haystack[i].x == needle.x&&haystack[i].y == needle.y){
+					return true;
+				}
     }
     return false;
 }
@@ -35,9 +47,11 @@ function setcherry(){
 	console.log(gamedata.cherry);
 	with(snake1){
 		setInterval(function(){
-			if(collision(snake.seg[0],snake.seg)){
-				//snake.seg=[];
+			if(collision(snake.seg[0])){
+				snake.seg=[{x: null, y: null}];
+				console.log('snake1');
 				io.emit('lose', 'snake1');
+				io.emit('gamedata', gamedata);
 			}
 	
 			if(snake.seg[0].x==gamedata.cherry.x&&snake.seg[0].y==gamedata.cherry.y){
@@ -67,9 +81,11 @@ function setcherry(){
 	}
 	with(snake2){
 		setInterval(function(){
-			if(collision(snake.seg[0],snake.seg)){
-				//snake.seg=[];
+			if(collision(snake.seg[0])){
+				snake.seg=[{x: null, y: null}];
+				console.log('snake2');
 				io.emit('lose', 'snake2');
+				io.emit('gamedata', gamedata);
 			}
 			if(snake.seg[0].x==gamedata.cherry.x&&snake.seg[0].y==gamedata.cherry.y){
 				snake.seg[snake.seg.length]={x: snake.seg[snake.seg.length-1].x, y: snake.seg[snake.seg.length-1].y};
