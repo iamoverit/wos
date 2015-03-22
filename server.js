@@ -3,7 +3,7 @@ var io = require('socket.io')(port);
 console.log('start listening? %d', port);
 var gamedata = { 	gf : {x : 50, y : 50},
 									cherry : {x: null, y: null},
-									speed:12,
+									speed:20,
 									interval:1000,
 								},
 		snake1 = {score: 0, dir : [{x: 0, y: 1}], snake: {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
