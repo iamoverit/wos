@@ -50,6 +50,7 @@ function setcherry(){
 				s.snake = {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]};
 				console.log('snake1');
 				io.emit('resetfield', true);
+				setcherry();
 				io.emit('setcherry', gamedata.cherry);
 				io.emit('score', {snake1: snake1.score, snake2: snake2.score, lose: 'snake1'});
 			}
@@ -87,6 +88,7 @@ function setcherry(){
 				s.dir = [{x: 1, y: 0}];
 				s.snake = {seg: [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]};
 				io.emit('resetfield', true);
+				setcherry();
 				io.emit('setcherry', gamedata.cherry);
 				io.emit('score', {snake1: snake1.score, snake2: snake2.score, lose: 'snake2'});
 			}
