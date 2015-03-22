@@ -45,7 +45,8 @@ function setcherry(){
 	setInterval(function(){
 		(function(s) {
 			if(collision(s.snake.seg[0])){
-				snake2 = {score: snake2.score+1, dir : [{x: 1, y: 0}], snake: {seg: [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
+				snake2.seg.length=snake1.seg.length-2;
+				snake2 = {score: snake2.score+1, dir : [{x: 0, y: 1}], snake: snake2.seg};
 				s.dir = [{x: 0, y: 1}]
 				s.snake = {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]};
 				console.log('snake1');
@@ -84,7 +85,8 @@ function setcherry(){
 	setInterval(function(){
 		(function(s) {
 			if(collision(s.snake.seg[0])){
-				snake1 = {score: snake1.score+1, dir : [{x: 0, y: 1}], snake: {seg: [{x:0, y:1},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]}};
+				snake1.seg.length=snake1.seg.length-2;
+				snake1 = {score: snake1.score+1, dir : [{x: 0, y: 1}], snake: snake1.seg};
 				s.dir = [{x: 1, y: 0}];
 				s.snake = {seg: [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]};
 				io.emit('resetfield', true);
