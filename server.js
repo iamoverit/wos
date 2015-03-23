@@ -92,7 +92,7 @@ function setcherry(){
 			}
 
 			if(s.dir[0].x!=0||s.dir[0].y!=0){
-				io.emit(s.name, [s.seg[0], s.seg[s.seg.length-4]||s.seg[s.seg.length-3], s.seg[s.seg.length-1]]);
+				io.emit('snake', {name: s.name, seg: [s.seg[0], s.seg[s.seg.length-4]||s.seg[s.seg.length-3], s.seg[s.seg.length-1]]});
 				for(var i=s.seg.length-1;i>0 ;i--) {
 					s.seg[i].x=s.seg[i-1].x;
 					s.seg[i].y=s.seg[i-1].y;
