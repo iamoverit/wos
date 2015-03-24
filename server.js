@@ -11,15 +11,16 @@ var gamedata = { 	gf : {x : 50, y : 50},
         name: "Unnamed",
 				player: "",
 				lives: 10, dir : [{x: 0, y: 0}], seg: [{x:2, y:2},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}],
-    };
+    },
 		snakes = [];
 
-function resetsnake(id, name){
-	snakes.push(clone(snake$, {name: name}));
+function resetsnake(id, name, player){
+	console.log(id, name, player);
+	snakes.push(clone(snake$, {name: name, player: player, dir : [{x: 0, y: 0}]}));
  	for(var i = 0; i < snakes.length; i++) {
 		io.emit('lives', {lose: snakes[i].name, lives: snakes[i].lives});
 	}
-	console.log(snakes);
+	//console.log(snakes);
 }
 
 function clone(proto, properties){
@@ -62,7 +63,7 @@ function move(s) {
 		if(col[1].seg.length-2>4){
 			col[1].seg.length=col[1].seg.length-2;
 		}
-		s.lives = s.lives-1;
+		s.lives = s.lives-1;                                7
 		s.dir = [{x: 0, y: 0}];
 		s.seg = [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}];
 		io.emit('lives', {lose: s.name, lives: s.lives});
@@ -114,29 +115,35 @@ function move(s) {
 		}
 	}
 	if(alllives==1&&allplayers>1){
-		//resetsnakes();
+	for(i=0;i<snakes.length;i++){
+		if(typeof snakes[i]!=='undefined'){
+			resetsnake(i, snakes[i].name, snakes[i].player);
+		}
+	}
 		io.emit('winner is', winner);
 	}
-	for(i=0;i<snakes.length-1;i++){
+	for(i=0;i<snakes.length;i++){
 		move(snakes[i]);
 	}
 	},gamedata.interval/gamedata.speed);
 
 for(i=0;i<4;i++){
-	resetsnake(i, 'snake'+(i+1));
+	var id=(i+1);
+	resetsnake(i, 'snake'+id, '');
+	console.log(i, 'snake'+id, ' - - - ');
 }
 
 io.on('connect', function (socket) {
-	for(i=0;i<snakes.length-1;i++){
+	for(i=0;i<snakes.length;i++){
 		if(typeof snakes[i]!=='undefined'){
-			if(snakes[i].player===""||snakes[i].player===(socket.id).toString()){
-				//resetsnake(i, 'snake'+i+1);
-				snakes[i].player=(socket.id).toString();
-				break;
+			if(snakes[i].player===''){
+				console.log('on connect',i, snakes[i].name, (socket.id).toString());
+				resetsnake(i, snakes[i].name, (socket.id).toString());
+				//break;
 			}
 		}
 	}
-	console.log(snakes);
+	//console.log(snakes);
 	socket.emit('join', 'dir');
 
 	socket.on('latency', function (fn) {
@@ -152,13 +159,13 @@ io.on('connect', function (socket) {
 
   socket.on('dir', function (indir) {
 		for(i=0;i<snakes.length;i++){
-		//console.log(snakes[i].name);
-			if(snakes[i].player==(socket.id).toString()){
+			if(snakes[i].player===(socket.id).toString()){
+				//console.log(i, snakes[i].name);
 				with(snakes[i]){
-					if (indir.dir.x==-1&&dir[dir.length-1].x!= 1) { dir.push(indir.dir); }
-					if (indir.dir.y==-1&&dir[dir.length-1].y!= 1) { dir.push(indir.dir); }
-					if (indir.dir.x== 1&&dir[dir.length-1].x!=-1) { dir.push(indir.dir); }
-					if (indir.dir.y== 1&&dir[dir.length-1].y!=-1) { dir.push(indir.dir); }
+					if (indir.dir.x===-1&&dir[dir.length-1].x!== 1) { dir.push(indir.dir); }
+					if (indir.dir.y===-1&&dir[dir.length-1].y!== 1) { dir.push(indir.dir); }
+					if (indir.dir.x=== 1&&dir[dir.length-1].x!==-1) { dir.push(indir.dir); }
+					if (indir.dir.y=== 1&&dir[dir.length-1].y!==-1) { dir.push(indir.dir); }
 					//console.log(dir);
 				}
 			}
