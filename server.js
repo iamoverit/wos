@@ -10,13 +10,13 @@ var gamedata = { 	gf : {x : 50, y : 50},
     snake$ = {
         name: "Unnamed",
 				player: "",
-				lives: 10, dir : [{x: 0, y: 0}], seg: [{x:2, y:2},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}],
+				lives: 10, dir : [{x: 0, y: 0}], seg: [{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}],
     },
 		snakes = [];
 
 function resetsnake(id, name, player){
-	console.log(id, name, player);
-	snakes.push(clone(snake$, {name: name, player: player, dir : [{x: 0, y: 0}]}));
+	//console.log(id, name, player);
+	snakes[id]=clone(snake$, {name: name, player: player, dir : [{x: null, y: null}], seg: [{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}]});
  	for(var i = 0; i < snakes.length; i++) {
 		io.emit('lives', {lose: snakes[i].name, lives: snakes[i].lives});
 	}
@@ -31,7 +31,7 @@ function clone(proto, properties){
 function collision(needle) {
  		for(var i = 0; i < snakes.length; i++) {
 			var haystack = snakes[i];
-			if(haystack.seg.length){
+			if(haystack.seg.length&&(haystack.dir.x!=0||haystack.dir.y!=0)){
     		for(var j = 1; j < haystack.seg.length; j++) {
         	if(haystack.seg[j].x == needle.x&&haystack.seg[j].y == needle.y){
 						//console.log(haystack.seg);
@@ -57,26 +57,28 @@ function setcherry(){
 function move(s) {
 	if(s.lives>0){
 	//console.log(s);
-	var col=collision(s.seg[0]);
-	//console.log(col);
-	if(col[0]){
-		if(col[1].seg.length-2>4){
-			col[1].seg.length=col[1].seg.length-2;
-		}
-		s.lives = s.lives-1;                                7
-		s.dir = [{x: 0, y: 0}];
-		s.seg = [{x:1, y:0},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}];
-		io.emit('lives', {lose: s.name, lives: s.lives});
-		//io.emit('resetfield', true);
-		//setcherry();
-	}
 
 	if(s.seg[0].x==gamedata.cherry.x&&s.seg[0].y==gamedata.cherry.y){
 		s.seg[s.seg.length]={x: s.seg[s.seg.length-1].x, y: s.seg[s.seg.length-1].y};
 		setcherry();
 	}
 
+	var col=collision(s.seg[0]);
+
 	if(s.dir[0].x!=0||s.dir[0].y!=0){
+		//console.log(col);
+		if(col[0]){
+			if(col[1].seg.length-2>4){
+				col[1].seg.length=col[1].seg.length-2;
+			}
+			s.lives = s.lives-1;
+			s.dir = [{x: 0, y: 0}];
+			s.seg = [{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null},{x:null, y:null}];
+			io.emit('lives', {lose: s.name, lives: s.lives});
+			//io.emit('resetfield', true);
+			//setcherry();
+		}
+
 		io.emit('snake', {name: s.name, seg: [s.seg[0], s.seg[s.seg.length-4]||s.seg[s.seg.length-3], s.seg[s.seg.length-1]]});
 		for(var i=s.seg.length-1;i>0 ;i--) {
 			s.seg[i].x=s.seg[i-1].x;
@@ -106,24 +108,23 @@ function move(s) {
 		if(snakes[i].player!=""){
 			allplayers++;
 		}
-	}
-
- 	for(var i = 0; i < snakes.length; i++) {
 		if(snakes[i].lives>0){
 			alllives++;
 			winner=snakes[i].name;
 		}
 	}
+
 	if(alllives==1&&allplayers>1){
-	for(i=0;i<snakes.length;i++){
-		if(typeof snakes[i]!=='undefined'){
-			resetsnake(i, snakes[i].name, snakes[i].player);
+		for(i=0;i<snakes.length;i++){
+			if(typeof snakes[i]!=='undefined'){
+				resetsnake(i, snakes[i].name, snakes[i].player);
+			}
 		}
-	}
 		io.emit('winner is', winner);
-	}
-	for(i=0;i<snakes.length;i++){
-		move(snakes[i]);
+	}else{
+		for(i=0;i<snakes.length;i++){
+			move(snakes[i]);
+		}
 	}
 	},gamedata.interval/gamedata.speed);
 
@@ -134,16 +135,19 @@ for(i=0;i<4;i++){
 }
 
 io.on('connect', function (socket) {
+	var flag=true;
+	//console.log("");
 	for(i=0;i<snakes.length;i++){
-		if(typeof snakes[i]!=='undefined'){
-			if(snakes[i].player===''){
-				console.log('on connect',i, snakes[i].name, (socket.id).toString());
+		if(typeof snakes[i]!=='undefined'&&flag){
+			if(snakes[i].player==''){
+				//console.log('on connect(2): ',i, snakes[i].name, (socket.id).toString());
+				//console.log('on connect(3): ',snakes);
 				resetsnake(i, snakes[i].name, (socket.id).toString());
-				//break;
+				flag=false;
 			}
 		}
+		//console.log('on connect: snakes['+i+']=',snakes[i]);
 	}
-	//console.log(snakes);
 	socket.emit('join', 'dir');
 
 	socket.on('latency', function (fn) {
@@ -158,9 +162,10 @@ io.on('connect', function (socket) {
 	socket.emit('gamedata', gamedata );
 
   socket.on('dir', function (indir) {
+	//console.log("");
 		for(i=0;i<snakes.length;i++){
+		//console.log((socket.id).toString(), snakes[i].name, snakes[i].dir);
 			if(snakes[i].player===(socket.id).toString()){
-				//console.log(i, snakes[i].name);
 				with(snakes[i]){
 					if (indir.dir.x===-1&&dir[dir.length-1].x!== 1) { dir.push(indir.dir); }
 					if (indir.dir.y===-1&&dir[dir.length-1].y!== 1) { dir.push(indir.dir); }
